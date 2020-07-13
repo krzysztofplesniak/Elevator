@@ -1,21 +1,24 @@
 import React from 'react';
 
-export const Elevator = ({ elevator }) => {
-  
-  return (
-    <div className='elevatorList--element'>
-      <div className='elevatorList--element__span'>Elevator 
-        <span className='elevatorList--element__bold'>{elevator.id.slice(3,4)}</span>
-      </div>
-      <div className='elevatorList--element__span'>floor #
-        <span className='elevatorList--element__bold'>{elevator.floor}</span>
-      </div>
-      <div className='elevatorList--element__span'>expected time
-        <span className='elevatorList--element__bold'>{elevator.time}</span>
-      </div>
-      <div className='elevatorList--element__direction'>
-        {elevator.direction === 'up'? <span>UP</span> : <span>DOWN</span>}
-      </div>
-    </div>
-  )
-}
+export const Elevator = ({ elevator: { id, floor, state, targetFloor } }) => {
+	return (
+		<div className='elevatorList--element'>
+			<div className='elevatorList--element__span'>
+				Elevator
+				<span className='elevatorList--element__bold'>
+					{parseInt(id.slice(3, 4)) + 1}
+				</span>
+			</div>
+			<div className='elevatorList--element__span'>
+				Floor #<span className='elevatorList--element__bold'>{floor}</span>
+			</div>
+			<div className='elevatorList--element__span'>
+				Target floor #
+				<span className='elevatorList--element__bold'>{targetFloor}</span>
+			</div>
+			<div className='elevatorList--element__direction'>
+				<span>{state.toUpperCase()}</span>
+			</div>
+		</div>
+	);
+};

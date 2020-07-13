@@ -1,65 +1,118 @@
-import React, { createContext, useReducer } from 'react';
+import React, { useEffect, createContext, useReducer } from 'react';
+import axios from 'axios';
 import AppReducer from './AppReducer';
 
-// Initial state
+// Initial state of app
 const initialState = {
-  //{ id: 'elv0', floor: 0, state: 'stopped' },
-  elevatorHistory: [
-    { id: 'elv0', floor: 7, time: 15, direction: 'up'},
-    { id: 'elv1', floor: 1, time: 3, direction: 'down'},
-    { id: 'elv2', floor: 3, time: 5, direction: 'down'},
-    { id: 'elv0', floor: 5, time: 8, direction: 'up'},
-    { id: 'elv1', floor: 4, time: 7, direction: 'down'},
-    { id: 'elv2', floor: 9, time: 20, direction: 'down'},
-    { id: 'elv2', floor: 2, time: 5, direction: 'up'},
-    { id: 'elv0', floor: 7, time: 8, direction: 'down'},
-    { id: 'elv1', floor: 8, time: 7, direction: 'down'},
-    { id: 'elv0', floor: 1, time: 20, direction: 'down'},
-    { id: 'elv2', floor: 3, time: 5, direction: 'up'},
-    { id: 'elv0', floor: 8, time: 8, direction: 'down'},
-    { id: 'elv1', floor: 3, time: 7, direction: 'up'},
-    { id: 'elv2', floor: 6, time: 20, direction: 'down'}
-  ],
-  elevator1: { floor: 9, state: 'move' },
-  elevator2: { floor: 3, state: 'stop' },
-  elevator3: { floor: 5, state: 'stop' },
-  expectedTime: 5
-}
+	elevators: [],
+	elevatorIsMoving: { elvId: 0, isMoving: false },
+	expectedTime: null,
+	loading: true,
+	elevatorHistory: [],
+	error: null,
+};
 
 // Create context
 export const GlobalContext = createContext(initialState);
 
-// Provider component
+// GlobalProvider component state
 export const GlobalProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(AppReducer, initialState);
+	const [state, dispatch] = useReducer(AppReducer, initialState);
 
-  // Actions
-  function elevatorUp() {
-    console.log(`Button UP`);
-    dispatch({
-      type: 'ELEVATOR_UP'
-    });
-  }
+	// Subscribe SSE event message "move"
+	useEffect(() => {
+		let eventSource = new EventSource('http://localhost:8080/stream');
 
-  function elevatorDown() {
-    console.log(`Button DOWN`);
-    dispatch({
-      type: 'ELEVATOR_DOWN'
-    });
-  }
+		eventSource.onmessage = evt => {
+			const { id, floor, state, targetFloor } = JSON.parse(evt.data);
 
-  return (<GlobalContext.Provider 
-    value={{
-      elevatorHistory: state.elevatorHistory,
-      expectedTime: state.expectedTime,
-      elevator1: state.elevator1,
-      elevator2: state.elevator2,
-      elevator3: state.elevator3,
-      elevatorUp,
-      elevatorDown
-    }}>
-      <div className="container">
-        {children}
-      </div>
-  </GlobalContext.Provider>);
-}
+			//console.log('Elevator SSE message ', { id, floor, state, targetFloor });
+
+			if (state === 'up' || state === 'down') {
+				dispatch({ type: 'ELEVATOR_IS_MOVING', payload: parseInt(id.slice(3, 4)) + 1});
+			} else {
+				dispatch({ type: 'ELEVATOR_IS_STOPPED' });
+			}
+
+			setElevatorHistory({ id, floor, state, targetFloor });
+			expectedTime(targetFloor, floor);
+			getElevators();
+		};
+	}, []);
+
+	// Helpers/utils methods
+	const setElevatorHistory = elevatorHistory => {
+		dispatch({
+			type: 'SET_ELEVATOR_HISTORY',
+			payload: elevatorHistory,
+		});
+	};
+
+	const expectedTime = (targetFloor, floor) => {
+		if (targetFloor) {
+			const expectedTimeforElevator = Math.abs(targetFloor - floor) + 1;
+			//console.log('expectedTimeforElevator ', expectedTimeforElevator);
+	
+			if (expectedTimeforElevator) {
+				dispatch({
+					type: 'EXPECTED_TIME',
+					payload: expectedTimeforElevator,
+				});
+			}
+		}
+	};
+
+	// Actions dispatcher helpers
+	const getElevators = async () => {
+		const response = await fetch('http://localhost:8080/elevators');
+		const elevators = await response.json();
+
+		dispatch({
+			type: 'GET_ELEVATORS',
+			payload: elevators,
+		});
+	};
+
+	const callElevator = elevatorID => {
+		
+		//const response = await axios.put(`http://localhost:8080/floor/${elevatorID}`);
+		axios.put(`http://localhost:8080/floor/${elevatorID}`);
+		
+		dispatch({
+			type: 'CALL_ELEVATOR',
+			payload: elevatorID
+		});
+	};
+
+	const elevatorUp = () => {
+		console.log(`Button UP`);
+		dispatch({
+			type: 'ELEVATOR_UP',
+		});
+	};
+
+	const elevatorDown = () => {
+		console.log(`Button DOWN`);
+		dispatch({
+			type: 'ELEVATOR_DOWN',
+		});
+	};
+
+	return (
+		<GlobalContext.Provider
+			value={{
+				elevators: state.elevators,
+				expectedTime: state.expectedTime,
+				elevatorIsMoving: state.elevatorIsMoving,
+				loadig: state.loading,
+				elevatorHistory: state.elevatorHistory,
+				error: state.error,
+				elevatorUp,
+				elevatorDown,
+				callElevator,
+				getElevators,
+			}}>
+			<div className='container'>{children}</div>
+		</GlobalContext.Provider>
+	);
+};

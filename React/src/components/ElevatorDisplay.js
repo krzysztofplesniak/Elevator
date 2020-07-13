@@ -1,33 +1,57 @@
-import React, { useContext } from 'react';
-import { DigitalDigit } from "digital-digit";
+import React, { useEffect, useContext } from 'react';
+import { DigitalDigit } from 'digital-digit';
 import { GlobalContext } from '../context/GlobalState';
 
 export const ElevatorDisplay = () => {
-  
-  const { elevator1, elevator2, elevator3 } = useContext(GlobalContext);
-  
-  //elevator1: { floor: 9, state: 'move' },
+	const { elevators, loading, getElevators, elevatorIsMoving: { elvId, isMoving } } = useContext(GlobalContext);
+	const [ elevator1, elevator2, elevator3 ] = elevators;
 
-  return (
-    <div className="elevatorDisplay">
-      <div className="elevatorDisplay--panel">
-        <div className="elevatorDisplay--digitalDigit">
-            <DigitalDigit digit={2} color="blue" opacitySegment={0.5} />
-        </div>
-        <p className="elevatorDisplay--info">{elevator1.state.toUpperCase()}</p>
-      </div>
-      <div className="elevatorDisplay--panel"> 
-        <div className="elevatorDisplay--digitalDigit">
-          <DigitalDigit  digit={5} color="red" opacitySegment={0.5} />
-        </div>
-        <p className="elevatorDisplay--info">{elevator2.state.toUpperCase()}</p>
-      </div>
-      <div className="elevatorDisplay--panel">
-        <div className="elevatorDisplay--digitalDigit">
-          <DigitalDigit  digit={7} color="green" opacitySegment={0.5} />
-        </div>
-        <p className="elevatorDisplay--info">{elevator3.state.toUpperCase()}</p>
-      </div>
-    </div>
-  )
-}
+	useEffect(() => {
+		getElevators();
+		// eslint-disable-next-line
+	}, []);
+
+	return (
+		<>
+			{!loading && elevators.length > 0 && (
+				<div className='elevatorDisplay'>
+					<div className='elevatorDisplay--panel'>
+						<div className='elevatorDisplay--digitalDigit'>
+							<DigitalDigit
+								digit={elevator1.floor}
+								color={(elvId === 1 && isMoving) ? 'red' : 'green'}
+								opacitySegment={0.5}
+							/>
+						</div>
+						<p className='elevatorDisplay--info'>
+							{elevator1.state.toUpperCase()}
+						</p>
+					</div>
+					<div className='elevatorDisplay--panel'>
+						<div className='elevatorDisplay--digitalDigit'>
+							<DigitalDigit
+								digit={elevator2.floor}
+								color={(elvId === 2 && isMoving) ? 'red' : 'green'}								opacitySegment={0.5}
+							/>
+						</div>
+						<p className='elevatorDisplay--info'>
+							{elevator2.state.toUpperCase()}
+						</p>
+					</div>
+					<div className='elevatorDisplay--panel'>
+						<div className='elevatorDisplay--digitalDigit'>
+							<DigitalDigit
+								digit={elevator3.floor}
+								color={(elvId === 3 && isMoving) ? 'red' : 'green'}
+								opacitySegment={0.5}
+							/>
+						</div>
+						<p className='elevatorDisplay--info'>
+							{elevator3.state.toUpperCase()}
+						</p>
+					</div>
+				</div>
+			)}
+		</>
+	);
+};

@@ -4,19 +4,22 @@ import { Elevator } from './Elevator';
 import { GlobalContext } from '../context/GlobalState';
 
 export const ElevatorHistory = () => {
+	const { elevatorHistory } = useContext(GlobalContext);
+	// @desc Reduce length of history to last 7 position
+	let lastElevatorHistory;
 
-  const { elevatorHistory } = useContext(GlobalContext);
-  // @desc Reduce length of history to last 7 position
-  const lastElevatorHistory = elevatorHistory.slice(elevatorHistory.length - 7,elevatorHistory.length);
-    
-  return (
-    <>
-      <h3>History elevator calling</h3>
-      <div className="elevatorList">
-         {lastElevatorHistory.map(elevator => 
-            <Elevator key={uuid()} elevator={elevator} />
-        )}
-      </div>
-    </>
-  )
-}
+	if (elevatorHistory.length > 6) {
+		lastElevatorHistory = elevatorHistory.slice(elevatorHistory.length - 7,elevatorHistory.length);
+	} else lastElevatorHistory = elevatorHistory;
+
+	return (
+		<>
+			<h3>History of elevators calling</h3>
+			<div className='elevatorList'>
+				{lastElevatorHistory.map(elevator => (
+					<Elevator key={uuid()} elevator={elevator} />
+				))}
+			</div>
+		</>
+	);
+};
