@@ -1,6 +1,15 @@
 Simplified Elevators API
 ========================
 
+Krzysztof Plesniak
+
+```sh
+
+2 komendy i projekt startuje
+npm install
+npm run dev
+```
+
 Starting server:
 
 ```sh
