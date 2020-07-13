@@ -3,7 +3,7 @@ const SSE = require("express-sse");
 const cors = require("cors");
 const ElevatorController = require("./elevator-controller");
 
-const port = 8080;
+const port = process.env.PORT || 8080;
 const app = express();
 const sse = new SSE();
 const elevatorController = new ElevatorController(3, 10);
