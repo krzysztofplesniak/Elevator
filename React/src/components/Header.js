@@ -2,8 +2,10 @@ import React, { useContext } from 'react';
 import { GlobalContext } from '../context/GlobalState';
 
 export const Header = () => {
-
-	const { expectedTime, elevatorIsMoving: { isMoving } } = useContext(GlobalContext);
+	const {
+		expectedTime,
+		elevatorIsMoving: { isMoving },
+	} = useContext(GlobalContext);
 
 	return (
 		<>
@@ -11,8 +13,8 @@ export const Header = () => {
 			{isMoving ? (
 				<>
 					<h2>
-						Expected time {expectedTime}{' '}
-						{expectedTime > 1 ? 'seconds' : 'second'}
+						<span>{`Expected time ${expectedTime} `}</span>
+						{expectedTime === 1 ? 'second' : 'seconds'}
 					</h2>
 				</>
 			) : (

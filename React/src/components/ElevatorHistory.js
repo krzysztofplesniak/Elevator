@@ -5,8 +5,9 @@ import { GlobalContext } from '../context/GlobalState';
 
 export const ElevatorHistory = () => {
 	const { elevatorHistory } = useContext(GlobalContext);
+
 	// @desc Reduce length of history to last 7 position
-	let lastElevatorHistory;
+	let lastElevatorHistory = null;
 
 	if (elevatorHistory.length > 6) {
 		lastElevatorHistory = elevatorHistory.slice(elevatorHistory.length - 7,elevatorHistory.length);

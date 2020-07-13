@@ -1,5 +1,6 @@
 export default (state, action) => {
 	switch (action.type) {
+
 		case 'GET_ELEVATORS':
 			return {
 				...state,
@@ -46,7 +47,8 @@ export default (state, action) => {
 			return {
 				...state,
 			};
-
+		
+		// it could nbe in another part of context in next edition od app
 		case 'GET_ELEVATORS_ERORR':
 			return {
 				...state,

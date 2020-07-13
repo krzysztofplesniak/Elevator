@@ -7,12 +7,12 @@ const initialState = {
 	elevators: [],
 	elevatorIsMoving: { elvId: 0, isMoving: false },
 	expectedTime: null,
-	loading: true,
 	elevatorHistory: [],
+	loading: true,
 	error: null,
 };
 
-// Create context
+// Create context by useHook
 export const GlobalContext = createContext(initialState);
 
 // GlobalProvider component state
@@ -26,32 +26,33 @@ export const GlobalProvider = ({ children }) => {
 		eventSource.onmessage = evt => {
 			const { id, floor, state, targetFloor } = JSON.parse(evt.data);
 
-			//console.log('Elevator SSE message ', { id, floor, state, targetFloor });
-
 			if (state === 'up' || state === 'down') {
 				dispatch({ type: 'ELEVATOR_IS_MOVING', payload: parseInt(id.slice(3, 4)) + 1});
 			} else {
 				dispatch({ type: 'ELEVATOR_IS_STOPPED' });
 			}
 
-			setElevatorHistory({ id, floor, state, targetFloor });
+			const newElevatorHistory = ({ id, floor, state, targetFloor });
+
+			setElevatorHistory(newElevatorHistory);
 			expectedTime(targetFloor, floor);
 			getElevators();
 		};
 	}, []);
 
 	// Helpers/utils methods
-	const setElevatorHistory = elevatorHistory => {
+	const setElevatorHistory = newElevatorHistory => {
 		dispatch({
 			type: 'SET_ELEVATOR_HISTORY',
-			payload: elevatorHistory,
+			payload: newElevatorHistory,
 		});
 	};
 
+	//Counting expected time arrival the elevator  
 	const expectedTime = (targetFloor, floor) => {
 		if (targetFloor) {
+
 			const expectedTimeforElevator = Math.abs(targetFloor - floor) + 1;
-			//console.log('expectedTimeforElevator ', expectedTimeforElevator);
 	
 			if (expectedTimeforElevator) {
 				dispatch({
@@ -62,8 +63,9 @@ export const GlobalProvider = ({ children }) => {
 		}
 	};
 
-	// Actions dispatcher helpers
-	const getElevators = async () => {
+	// Actions dispatcher helpers for menage state of application
+	// get information about status of elevator from backend
+		const getElevators = async () => {
 		const response = await fetch('http://localhost:8080/elevators');
 		const elevators = await response.json();
 
@@ -73,9 +75,9 @@ export const GlobalProvider = ({ children }) => {
 		});
 	};
 
+	// calling 'free" elevator by clicking the button on particular level/stage in building
 	const callElevator = elevatorID => {
-		
-		//const response = await axios.put(`http://localhost:8080/floor/${elevatorID}`);
+				
 		axios.put(`http://localhost:8080/floor/${elevatorID}`);
 		
 		dispatch({
@@ -84,6 +86,7 @@ export const GlobalProvider = ({ children }) => {
 		});
 	};
 
+	// methods for menage elevator when user is inside 
 	const elevatorUp = () => {
 		console.log(`Button UP`);
 		dispatch({
@@ -104,13 +107,13 @@ export const GlobalProvider = ({ children }) => {
 				elevators: state.elevators,
 				expectedTime: state.expectedTime,
 				elevatorIsMoving: state.elevatorIsMoving,
-				loadig: state.loading,
 				elevatorHistory: state.elevatorHistory,
+				loadig: state.loading,
 				error: state.error,
-				elevatorUp,
-				elevatorDown,
-				callElevator,
 				getElevators,
+				callElevator,
+				elevatorUp,
+				elevatorDown
 			}}>
 			<div className='container'>{children}</div>
 		</GlobalContext.Provider>

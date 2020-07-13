@@ -6,7 +6,7 @@ Krzysztof Plesniak
 ```sh
 
 2 komendy i projekt startuje
-npm install
+npm install dla React
 npm run dev
 ```
 
