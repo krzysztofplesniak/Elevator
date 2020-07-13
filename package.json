@@ -42,5 +42,6 @@
 			"last 3 firefox version",
 			"last 3 safari version"
 		]
-	}
+	},
+  "proxy": "http://localhost:3000"
 }
