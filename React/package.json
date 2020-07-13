@@ -8,12 +8,13 @@
     "react-scripts": "3.4.0"
   },
   "engines": {
-		"node": "12.13.1",
-		"npm": "6.12.1"
-	},
+    "node": "12.13.1",
+    "npm": "6.12.1"
+  },
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^5.13.1",
     "digital-digit": "^1.1.2",
+    "eslint-plugin-react-hooks": "^4.0.7",
     "react-icons": "^3.10.0",
     "uuid": "^8.2.0"
   },
