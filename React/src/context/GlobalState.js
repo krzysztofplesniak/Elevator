@@ -21,7 +21,7 @@ export const GlobalProvider = ({ children }) => {
 
 	// Subscribe SSE event message "move"
 	useEffect(() => {
-		let eventSource = new EventSource('http://localhost:8080/stream');
+		let eventSource = new EventSource('/stream');
 
 		eventSource.onmessage = evt => {
 			const { id, floor, state, targetFloor } = JSON.parse(evt.data);
@@ -66,7 +66,7 @@ export const GlobalProvider = ({ children }) => {
 	// Actions dispatcher helpers for menage state of application
 	// get information about status of elevator from backend
 		const getElevators = async () => {
-		const response = await fetch('http://localhost:8080/elevators');
+		const response = await fetch('/elevators');
 		const elevators = await response.json();
 
 		dispatch({
@@ -78,7 +78,7 @@ export const GlobalProvider = ({ children }) => {
 	// calling 'free" elevator by clicking the button on particular level/stage in building
 	const callElevator = elevatorID => {
 				
-		axios.put(`http://localhost:8080/floor/${elevatorID}`);
+		axios.put(`/floor/${elevatorID}`);
 		
 		dispatch({
 			type: 'CALL_ELEVATOR',
