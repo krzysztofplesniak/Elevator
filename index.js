@@ -31,16 +31,19 @@ app.put("/floor/:number", (req, res) => {
   res.send(elevator);
 });
 
+// for production purposes when is deployed on Heroku
 if (env === 'production') {
   //Static folder
   app.use(express.static('React/build'));
   app.get("*", (req, res) => {
     res.sendFile(path.resolve(__dirname, 'React','build','index.html'))
-    console.log('Static folder');
-});
+    console.log('xxxxxxxxxxxxxxx production mode');
+  });
+} else {
+  console.log('xxxxxxxxxxxxxxxxxx development mode');
 }
 
-app.use("/a", (req, res) => res.sendFile(path.resolve(__dirname, 'React','public','index.html')));
+//app.use("/a", (req, res) => res.sendFile(path.resolve(__dirname, 'React','public','index.html')));
 app.use("/", (req, res) => res.status(404).send({ error: `Resource not found, port is ${port}` }));
 
 app.listen(port, () =>
