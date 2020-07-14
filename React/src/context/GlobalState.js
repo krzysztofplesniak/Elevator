@@ -32,7 +32,7 @@ export const GlobalProvider = ({ children }) => {
 			localPath = `http://localhost:${port}`;	
 			console.log('localPath ', localPath);
 			console.log('process.env ', process.env);
-		}
+		} 
 				
 		const eventSource = new EventSource(`${localPath}/stream`);
 

@@ -10,11 +10,13 @@
 		"server": "nodemon --watch src -e js,ejs --exec npm run start",
 		"start": "node index.js",
 		"test": "mocha --recursive './src/**/*.spec.js'",
-		"test:watch": "mocha --recursive './src/**/*.spec.js' --watch"
+		"test:watch": "mocha --recursive './src/**/*.spec.js' --watch",
+		"heroku-postbuild": "NPM_CONIFG_PRODUCTION=false npm install --prefix React && npm run build -- prefix React"
 	},
 	"author": "Fortum",
 	"license": "UNLICENSED",
 	"dependencies": {
+		"config": "^3.3.1",
 		"cors": "^2.8.5",
 		"dotenv": "^8.2.0",
 		"express": "^4.17.1",
