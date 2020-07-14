@@ -2,8 +2,10 @@ const express = require("express");
 const SSE = require("express-sse");
 const cors = require("cors");
 const ElevatorController = require("./elevator-controller");
-
+const dotenv = require("dotenv");
+dotenv.config({path: './config.env'});
 const port = process.env.PORT || 8080;
+
 const app = express();
 const sse = new SSE();
 const elevatorController = new ElevatorController(3, 10);

@@ -16,6 +16,7 @@
 	"license": "UNLICENSED",
 	"dependencies": {
 		"cors": "^2.8.5",
+		"dotenv": "^8.2.0",
 		"express": "^4.17.1",
 		"express-sse": "^0.5.3"
 	},
@@ -42,6 +43,5 @@
 			"last 3 firefox version",
 			"last 3 safari version"
 		]
-	},
-  "proxy": "http://localhost:3000"
+	}
 }

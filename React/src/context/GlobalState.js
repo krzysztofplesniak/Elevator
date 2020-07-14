@@ -1,4 +1,6 @@
 import React, { useEffect, createContext, useReducer } from 'react';
+//const dotenv = require("dotenv");
+//dotenv.config({path: './config.env'});
 import axios from 'axios';
 import AppReducer from './AppReducer';
 
@@ -18,10 +20,21 @@ export const GlobalContext = createContext(initialState);
 // GlobalProvider component state
 export const GlobalProvider = ({ children }) => {
 	const [state, dispatch] = useReducer(AppReducer, initialState);
-
+	
+	
 	// Subscribe SSE event message "move"
 	useEffect(() => {
-		let eventSource = new EventSource('/stream');
+		const port = process.env.PORT || 8080;
+		const env = process.env.NODE_ENV;
+		let localPath = null;	
+
+		if (env === 'development') {
+			localPath = `http://localhost:${port}`;	
+			console.log('localPath ', localPath);
+			console.log('process.env ', process.env);
+		}
+				
+		const eventSource = new EventSource(`${localPath}/stream`);
 
 		eventSource.onmessage = evt => {
 			const { id, floor, state, targetFloor } = JSON.parse(evt.data);
@@ -65,7 +78,7 @@ export const GlobalProvider = ({ children }) => {
 
 	// Actions dispatcher helpers for menage state of application
 	// get information about status of elevator from backend
-		const getElevators = async () => {
+	const getElevators = async () => {
 		const response = await fetch('/elevators');
 		const elevators = await response.json();
 
