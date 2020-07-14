@@ -34,9 +34,13 @@ app.put("/floor/:number", (req, res) => {
 if (env === 'production') {
   //Static folder
   app.use(express.static('React/build'));
-  app.get("*", (req, res) => res.sendFile(path.resolve(__dirname, 'React','build','index.html')));
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'React','build','index.html'))
+    console.log('Static folder');
+});
 }
 
+app.use("/a", (req, res) => res.sendFile(path.resolve(__dirname, 'React','public','index.html')));
 app.use("/", (req, res) => res.status(404).send({ error: `Resource not found, port is ${port}` }));
 
 app.listen(port, () =>
