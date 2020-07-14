@@ -30,9 +30,10 @@ export const GlobalProvider = ({ children }) => {
 
 		if (env === 'development') {
 			localPath = `http://localhost:${port}`;	
-			// console.log('localPath ', localPath);
-			// console.log('env ', env );
-		} 
+			console.log('development mode');
+		} else {
+			console.log('production mode');
+		}
 				
 		const eventSource = new EventSource(`${localPath}/stream`);
 
