@@ -27,7 +27,7 @@ app.put("/floor/:number", (req, res) => {
 });
 
 
-//app.use("/", (req, res) => res.status(404).send({ error: "Resource not found" }));
+app.use("/", (req, res) => res.status(404).send({ error: `Resource not found, port is ${port}` }));
 app.get("/ping", (req, res) => res.send("pong"));
 app.listen(port, () =>
   console.log(`Elevator backend listening at http://localhost:${port}`)
