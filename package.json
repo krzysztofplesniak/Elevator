@@ -5,13 +5,14 @@
 	"private": true,
 	"main": "index.js",
 	"scripts": {
+		"start": "node index.js",
 		"client": "npm start --prefix React",
 		"dev": "concurrently \"npm run server\" \"npm run client\"",
+		"dev2": "concurrently \"npm run start\" \"npm run client\"",
 		"server": "nodemon --watch src -e js,ejs --exec npm run start",
-		"start": "node index.js",
 		"test": "mocha --recursive './src/**/*.spec.js'",
 		"test:watch": "mocha --recursive './src/**/*.spec.js' --watch",
-		"heroku-postbuild": "NPM_CONIFG_PRODUCTION=false npm install --prefix React && npm run build -- prefix React"
+		"heroku-postbuild": "npm install --prefix React && npm run build -- prefix React"
 	},
 	"author": "Fortum",
 	"license": "UNLICENSED",

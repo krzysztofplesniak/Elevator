@@ -43,7 +43,7 @@ if (env === 'production') {
   console.log('xxxxxxxxxxxxxxxxxx development mode');
 }
 
-//app.use("/a", (req, res) => res.sendFile(path.resolve(__dirname, 'React','public','index.html')));
+
 app.use("/", (req, res) => res.status(404).send({ error: `Resource not found, port is ${port}` }));
 
 app.listen(port, () =>
