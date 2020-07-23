@@ -37,12 +37,9 @@ if (env === 'production') {
   app.use(express.static('React/build'));
   app.get("*", (req, res) => {
     res.sendFile(path.resolve(__dirname, 'React','build','index.html'))
-    console.log('xxxxxxxxxxxxxxx production mode');
-  });
-} else {
-  console.log('xxxxxxxxxxxxxxxxxx development mode');
-}
 
+  });
+}
 
 app.use("/", (req, res) => res.status(404).send({ error: `Resource not found, port is ${port}` }));
 

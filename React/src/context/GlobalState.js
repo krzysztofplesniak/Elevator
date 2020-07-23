@@ -29,13 +29,10 @@ export const GlobalProvider = ({ children }) => {
 		let localPath = null;	
 
 		if (env === 'development') {
-			localPath = `http://localhost:${port}`;	
-			console.log('development mode');
+			const eventSource = new EventSource(`http://localhost:${port}/stream`);
 		} else {
-			console.log('production mode');
+			const eventSource = new EventSource('/stream');
 		}
-				
-		const eventSource = new EventSource(`${localPath}/stream`);
 
 		eventSource.onmessage = evt => {
 			const { id, floor, state, targetFloor } = JSON.parse(evt.data);
